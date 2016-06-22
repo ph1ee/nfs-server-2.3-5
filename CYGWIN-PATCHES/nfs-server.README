@@ -1,0 +1,253 @@
+nfs-server
+------------------------------------------
+Port of the Universal NFS Server.
+
+Runtime requirements:
+  cygwin-1.5.14 or newer
+
+Build requirements:
+  cygwin-1.3.20 or newer
+  sunrpc
+
+Canonical homepage:
+  http://packages.debian.org/stable/net/nfs-user-server.html
+
+Canonical download:
+  http://packages.debian.org/stable/net/nfs-user-server.html
+  
+------------------------------------
+
+Build instructions:
+  unpack nfs-server-VER-REL-src.tar.bz2
+    if you use setup to install this src package, it will be
+	 unpacked under /usr/src automatically
+  cd /usr/src/nfs-server-VER-REL
+  ./configure							\
+		--prefix=/usr					\
+		--sysconfdir=/etc				\
+		--libexecdir=/usr/sbin			\
+		--localstatedir=/var			\
+		--datadir=/usr/share			\
+		--mandir=/usr/share/man			\
+		--infodir=/usr/share/info
+  make all
+  make install
+
+-------------------------------------------
+
+Files included in the binary distro
+
+  /usr/bin/nfs-server-config
+  /usr/sbin/rpc.mountd.exe
+  /usr/sbin/rpc.nfsd.exe
+  /usr/sbin/rpc.ugidd.exe
+  /usr/sbin/showmount.exe
+  /usr/share/doc/Cygwin/nfs-server-2.3-1.README
+  /usr/share/doc/nfs-server-2.3/BUGS
+  /usr/share/doc/nfs-server-2.3/ChangeLog
+  /usr/share/doc/nfs-server-2.3/COPYING
+  /usr/share/doc/nfs-server-2.3/NEWS
+  /usr/share/doc/nfs-server-2.3/README
+  /usr/share/man/man5/exports.5
+  /usr/share/man/man8/mountd.8
+  /usr/share/man/man8/nfsd.8
+  /usr/share/man/man8/showmount.8
+  /usr/share/man/man8/ugidd.8
+
+------------------
+
+Known Limitations
+
+  The Cygwin port of the Universal NFS server suffers from a couple of
+  limitations.  Known issues:
+
+  - ISSUE : Recommend using ntsec
+
+    When running mountd/nfsd, it is very much recommended that you set
+    "ntsec" in the CYGWIN environment variable.  Recent releases of
+    Cygwin make "ntsec" behavior the default for new installations.
+
+    Running without ntsec enabled may cause odd and hard-to-disgnose
+    permissions problems when Unix clients access an NFS export and
+    expect to be able to change permissions on files in a meaningful
+    way.
+
+  - ISSUE : Daemons are single-threaded
+
+    The mount and nfs daemons are single-threaded.  This means that
+    multiple clients attempting to access NFS exports from a Cygwin
+    host may run unto RPC timeout errors.
+    
+  - ISSUE : Daemons require 'impersonate logged on user' right.
+
+    When running under Windows NT, Windows 2000, or Windows XP, the
+    mount and NFS daemons (rpc.mountd and rpc.nfsd) should be run under
+    an account that has the "impersonate logged on user" privilidge.
+
+    The Local System account (used for running most services) is quite
+    sufficient.  Installing mountd/nfsd using cygrunsrv (see "Running
+    NFSD as a Windows Service", below) will by default run the daemons
+    under the Local System account.
+
+  - ISSUE : Daemons cannot re-export mapped network drives
+
+    When running under Windows NT, Windows 2000, or Windows XP under
+    the Local System account, the mount and NFS daemons (rpc.mountd
+    and rpc.nfsd) will not be able to export mapped network drives
+    (remote SMB shares), even if these are visible to a Cygwin user.
+
+    This is caused by security restrictions placed on the Local System
+    account.  If you want your mount and NFS daemons to re-export mapped
+    network drives, you will need to run them under an account other
+    than Local System, and start both daemons with the '-r' option
+    to enable re-exporting.
+
+  - ISSUE : Daemons expect 'nobody' or 'Guest' as anonymous user
+
+    When trying to determine what the default anonymous user UID/GID
+    should be, mountd/nfsd first look for a user named "nobody".  If
+    the user "nobody" does not exist, they look for a user named "Guest"
+    (no attempt is made to distinguish between a local Guest account
+    and a domain Guest account, if both are present in /etc/passwd.)
+
+    If neither of these accounts is present, then the service will use
+    an anonymous user UID/GID of -2/-2.  Error messages of the form
+    "Unable to seteuid(65534): <message>" are indicative of this problem.
+
+  - ISSUE : Portmap service fails to start
+
+    After setting up NFS services using the nfs-server-config script, an
+    attempt to start the installed services may fail with the message:
+
+        The Cygwin mountd service depends on the Cygwin portmap service which
+        failed to start because of the following error:
+
+        The service cannot be started, either because it is disabled or
+        because it has no enabled devices associated with it.
+
+    You may see this error if you configured the services to run under a
+    seperate user account.  If you see this error, please check to make
+    sure that the /var/log directory is writable by the user that you are
+    running the portmap, mountd, and nfsd services under.  You can do this
+    using the following commands:
+
+        $ rm -f /var/log/portmap.log
+        $ rm -f /var/log/mountd.log
+        $ rm -f /var/log/nfsd.log
+        $ chmod a+w /var/log
+
+    This should allow the services to start, and allow them to generate log
+    files.  Hopefully everything will work properly and you won't need them.
+
+  - ISSUE : Cannot export Windows directories not under Cygwin root
+
+    While the mount daemon will export the various virtual filesystems
+    used by Cygwin (/cygdrive, /dev, /proc, etc.), the NFS daemon is
+    unable to resolve the resulting NFS file handles.
+
+    There is a workaround that will allow you to export a Windows drive:
+    create a regular directory, mount the drive letter at that directory,
+    and then export the directory.  For example:
+
+      $ mkdir -p /exports/c
+      $ mount -f -s -b c:/ /exports/c
+      $ echo "/exports/c (ro,all_squash)" >> /etc/exports
+
+  - ISSUE : Considerations when mapping UIDs/GIDs
+
+    Given the difference between Unix and Windows file permisssions, it
+    is fortunate that there are a number of ways to handle mapping client
+    user and group IDs to acceptable values on the server side.
+ 
+    The simplest method is to simply specify a particular export as
+    'all_squash'.  This forces all clients accessing the export to use
+    the default anonymous user UID/GID when accessing the export (see
+    "Daemons expect 'nobody' or 'Guest' as anonymous user", above).
+
+      /exports/foo *(ro,all_squash)
+
+    If you wish force all clients accessing the export to do so as if
+    they were a particular user, you can do so using the 'anonuid' and
+    'anongid' properties for the export.  You can use the 'id' command
+    to determine the UID/GID for a particular user name:
+
+      $ id Administrator
+      uid=11273(joe.random) gid=10513(Domain Users) groups=10513(Domain Users)
+
+      /exports/bar *(ro,all_squash,anonuid=11273,anongid=10513)
+
+    Finally, if you need finer control over how you map client UIDs/GIDs
+    to server-side UIDs/GIDs, you can use the 'map_static' properties
+    for an export.  This lets you specify the name of a file that will
+    be used to map client UIDs to server UIDs.  Try "man exports" and
+    search for "map_static" for more information.
+
+      /exports/bar 192.168.2.100(ro,map_static=/etc/nfs/bar.map)
+      
+    Note that is you use the map_static option, you *must* use a non-wildcard
+    client address.  In the above example, using '192.168.2.*' or '*' would
+    *not* work, as the server associates the provided static map with exactly
+    one IP address.
+
+------------------
+
+Installing and Running NFSD
+
+  As a Windows Service:
+
+    Run the script "nfs-server-config" (located in the /bin directory).  This
+    script will ask questions about how the services are to be set up, and then
+    handle stopping, uninstalling, and recreating the services as well as example
+    configuration files.
+
+  Under inetd:
+
+    TBD.
+
+  Under xinetd:
+
+    TBD.
+
+----- version 2.3-5 -----
+
+Maintenance release.
+  Added SFU detection and warning to nfs-server-setup.
+  Make /var/log writable when running nfsd under a separate user account.
+
+----- version 2.3-4 -----
+
+Maintenance release.
+  Removed use of UID variable in nfs-server-setup.
+
+----- version 2.3-3 -----
+
+Maintenance release.
+  Minor debug logging cleanups
+  Minor documentation cleanups
+  Added make targets for static analysis via splint
+  Bug fix from Linus Hicks fro for 'Cannot stat <file>' error
+
+----- version 2.3-2 -----
+
+Maintenance release.
+  Fixed use of incorrect /etc/exports directives in example docs.
+  Enabled export of device nodes.
+
+----- version 2.3-1 -----
+
+Maintenance release.
+  Cleaned up source layout.
+  General source code cleanup.
+  Much updated nfs-server-config script.
+  Improved static-map documentation.
+  Migrated build system to use configure exclusively.
+  Removed CDF support in favor of future ClusterNFS integration.
+  Added support for simple '*' as allowed host in /etc/exports
+  Added sample static map file.
+  Added support for setting root uid on command line
+  Passes majority of Connectathon tests (http://www.connectathon.org/nfstests.html)
+
+----- version 2.2.47-1 -----
+
+Initial release
+  Cygwin port maintained by: Sam Robb (samuel.robb@netapp.com) 

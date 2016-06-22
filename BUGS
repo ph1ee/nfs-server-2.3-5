@@ -1,0 +1,23 @@
+
+
+	If you suspect a bug with this release of nfsd, please report
+	it to:
+
+		samuel.robb@netapp.com
+
+	I will try to answer you ASAP. Please make sure to include
+	the following information in your bug report:
+
+	 *	Version of nfsd you're using.
+	 *	The client with which these problems occur (OS, ...).
+	 *	What compiler you used to compile nfsd.
+	 *	Your /etc/exports file, or relevant parts thereof.
+	 *	Unless it's too large, a debug trace of the problem.
+		Refer to the nfsd manpage on how to make nfsd generate
+		a debug trace.
+
+	These informations will likely help me find any bugs faster.
+
+	Thank you for your cooperation!
+
+	Sam Robb <samuel.robb@netapp.com>

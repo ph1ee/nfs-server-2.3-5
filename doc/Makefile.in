@@ -1,0 +1,75 @@
+#### Start of system configuration section. ####
+
+SRCDIR = @srcdir@
+VPATH = @srcdir@
+RANLIB = @RANLIB@
+INSTALL = @INSTALL@
+INSTALL_DATA = @INSTALL_DATA@
+MAKEINFO = makeinfo
+TEXI2DVI = texi2dvi
+SHELL = /bin/bash
+
+prefix	= $(install_prefix)/usr
+infodir = $(install_prefix)/info
+man5dir = $(install_prefix)/@mandir@/man5
+man5ext = .5
+man8dir = $(install_prefix)/@mandir@/man8
+man8ext = .8
+rpcprefix = rpc.
+binprefix = 
+
+#### End of system configuration section. ####
+
+MANPAGES5	= exports
+MANPAGES8p	= mountd nfsd ugidd
+MANPAGES8	= showmount
+INFO		= 
+DVI			= 
+TEXT		= 
+TARGETS		= $(INFO) $(DVI) $(TEXT)
+
+.PHONY: all install installdirs
+
+all: $(TARGETS)
+
+install: $(DAEMONS) $(CLIENTS) installdirs
+	@for manp in $(MANPAGES5); do			\
+	    echo "installing $$manp$(man5ext) in $(man5dir)";	\
+	    $(INSTALL_DATA) $(SRCDIR)/$$manp.man	\
+	        $(man5dir)/$$manp$(man5ext); \
+	done
+	@for manp in $(MANPAGES8p); do			\
+	    echo "installing $$manp$(man8ext) in $(man8dir)";	\
+	    $(INSTALL_DATA) $(SRCDIR)/$$manp.man	\
+	        $(man8dir)/$$manp$(man8ext); 		\
+	    if [ 'x$(rpcprefix)' != 'x' ]; then \
+	        rm -f $(man8dir)/$(rpcprefix)$$manp$(man8ext); \
+	        ln -s $$manp$(man8ext) \
+	            $(man8dir)/$(rpcprefix)$$manp$(man8ext); \
+	    fi; \
+	done
+	@for manp in $(MANPAGES8); do			\
+	    echo "installing $$manp$(man8ext) in $(man8dir)";	\
+	    $(INSTALL_DATA) $(SRCDIR)/$$manp.man	\
+	        $(man8dir)/$$manp$(man8ext); 		\
+	done
+
+installdirs:
+	../mkinstalldirs $(man5dir) $(man8dir)
+
+.PHONY: clean mostlyclean distclean
+
+clean mostlyclean distclean::
+	@rm -vf $(TARGETS)
+	@rm -vf *.o
+	@rm -vf *.stackdump
+	@rm -vf core
+
+mostlyclean distclean::
+	@rm -vf Makefile
+
+distclean::
+	@rm -vf *~
+
+# Prevent GNU make v3 from overflowing arg limit on SysV.
+.NOEXPORT:

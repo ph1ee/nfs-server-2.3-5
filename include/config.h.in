@@ -1,0 +1,340 @@
+/* include/config.h.in.  Generated from configure.in by autoheader.  */
+
+/* If defined, the nfs server will collect call profiling statistics. */
+#undef ENABLE_CALL_PROFILING
+
+/* If defined, nfsd will use the new inode number generation scheme for
+   avoiding inode number clashes on big hard disks. */
+#undef ENABLE_DEVTAB
+
+/* If defined, use EXPORTS_OWNER_UID and EXPORTS_OWNER_GID to check of
+   /etc/exports owner at server startup */
+#undef ENABLE_EXPORTS_OWNER_CHECK
+
+/* If defined, ugidd will use host access control provided by libwrap.a from
+   tcp_wrappers. */
+#undef ENABLE_HOSTS_ACCESS
+
+/* If defined, every mount request will be logged to syslogd with the name of
+   the requesting site and the path that was requested. */
+#undef ENABLE_LOG_MOUNTS
+
+/* If defined, you will be able to run several nfsd process in parallel
+   servicing all NFS requests. */
+#undef ENABLE_MULTIPLE_SERVERS
+
+/* If defined, nfsd will support ugidd queries. */
+#undef ENABLE_UGID_DAEMON
+
+/* If defined, nfsd will support user mapping via the client's NIS server. */
+#undef ENABLE_UGID_NIS
+
+/* Group id of /etc/exports owner */
+#undef EXPORTS_OWNER_GID
+
+/* User id of /etc/exports owner */
+#undef EXPORTS_OWNER_UID
+
+/* Define to the type of elements in the array set by `getgroups'. Usually
+   this is either `int' or `gid_t'. */
+#undef GETGROUPS_T
+
+/* Define to 1 if you have the `authdes_getucred' function. */
+#undef HAVE_AUTHDES_GETUCRED
+
+/* "authdes_getucred in header file?" */
+#undef HAVE_AUTHDES_GETUCRED_DECL
+
+/* "does setfsuid accept -2?" */
+#undef HAVE_BROKEN_SETFSUID
+
+/* "BSD vs. POSIX signal handling" */
+#undef HAVE_BSD_SIGNALS
+
+/* Define to 1 if you have the <dirent.h> header file, and it defines `DIR'.
+   */
+#undef HAVE_DIRENT_H
+
+/* Define to 1 if you don't have `vprintf' but do have `_doprnt.' */
+#undef HAVE_DOPRNT
+
+/* Define to 1 if you have the <fcntl.h> header file. */
+#undef HAVE_FCNTL_H
+
+/* Define to 1 if you have the `getcwd' function. */
+#undef HAVE_GETCWD
+
+/* Define to 1 if you have the `getdtablesize' function. */
+#undef HAVE_GETDTABLESIZE
+
+/* Define to 1 if you have the `getopt' function. */
+#undef HAVE_GETOPT
+
+/* Define to 1 if you have the `getopt_long' function. */
+#undef HAVE_GETOPT_LONG
+
+/* Define to 1 if you have the `innetgr' function. */
+#undef HAVE_INNETGR
+
+/* Define to 1 if you have the <inttypes.h> header file. */
+#undef HAVE_INTTYPES_H
+
+/* Define to 1 if you have the `lchown' function. */
+#undef HAVE_LCHOWN
+
+/* Define to 1 if you have the `nsl' library (-lnsl). */
+#undef HAVE_LIBNSL
+
+/* Define to 1 if you have the `nys' library (-lnys). */
+#undef HAVE_LIBNYS
+
+/* Define to 1 if you have the `rpc' library (-lrpc). */
+#undef HAVE_LIBRPC
+
+/* Define to 1 if you have the `socket' library (-lsocket). */
+#undef HAVE_LIBSOCKET
+
+/* Define to 1 if you have the `wrap' library (-lwrap). */
+#undef HAVE_LIBWRAP
+
+/* Work around bug in tcp_wrappers-7.2 where libwrap.a references
+   deny_severity and allow_severity without defining them */
+#undef HAVE_LIBWRAP_BUG
+
+/* Define to 1 if you have the <memory.h> header file. */
+#undef HAVE_MEMORY_H
+
+/* Define to 1 if you have the <ndir.h> header file, and it defines `DIR'. */
+#undef HAVE_NDIR_H
+
+/* Define to 1 if you have the `quotactl' function. */
+#undef HAVE_QUOTACTL
+
+/* "rpcgen -C" */
+#undef HAVE_RPCGEN_C
+
+/* "rpcgen -I" */
+#undef HAVE_RPCGEN_I
+
+/* Define to 1 if you have the `seteuid' function. */
+#undef HAVE_SETEUID
+
+/* Define to 1 if you have the `setfsgid' function. */
+#undef HAVE_SETFSGID
+
+/* Define to 1 if you have the `setfsuid' function. */
+#undef HAVE_SETFSUID
+
+/* Define to 1 if you have the `setgroups' function. */
+#undef HAVE_SETGROUPS
+
+/* Define to 1 if you have the `setreuid' function. */
+#undef HAVE_SETREUID
+
+/* Define to 1 if you have the `setsid' function. */
+#undef HAVE_SETSID
+
+/* Define to 1 if you have the <stdarg.h> header file. */
+#undef HAVE_STDARG_H
+
+/* Define to 1 if you have the <stdint.h> header file. */
+#undef HAVE_STDINT_H
+
+/* Define to 1 if you have the <stdlib.h> header file. */
+#undef HAVE_STDLIB_H
+
+/* Define to 1 if you have the <strings.h> header file. */
+#undef HAVE_STRINGS_H
+
+/* Define to 1 if you have the <string.h> header file. */
+#undef HAVE_STRING_H
+
+/* Define to 1 if `st_blocks' is member of `struct stat'. */
+#undef HAVE_STRUCT_STAT_ST_BLOCKS
+
+/* Define to 1 if `st_rdev' is member of `struct stat'. */
+#undef HAVE_STRUCT_STAT_ST_RDEV
+
+/* Define to 1 if your `struct stat' has `st_blocks'. Deprecated, use
+   `HAVE_STRUCT_STAT_ST_BLOCKS' instead. */
+#undef HAVE_ST_BLOCKS
+
+/* Define to 1 if you have the <syslog.h> header file. */
+#undef HAVE_SYSLOG_H
+
+/* Define to 1 if you have the <sys/dir.h> header file, and it defines `DIR'.
+   */
+#undef HAVE_SYS_DIR_H
+
+/* Define to 1 if you have the <sys/file.h> header file. */
+#undef HAVE_SYS_FILE_H
+
+/* Define to 1 if you have the <sys/fsuid.h> header file. */
+#undef HAVE_SYS_FSUID_H
+
+/* Define to 1 if you have the <sys/ndir.h> header file, and it defines `DIR'.
+   */
+#undef HAVE_SYS_NDIR_H
+
+/* Define to 1 if you have the <sys/stat.h> header file. */
+#undef HAVE_SYS_STAT_H
+
+/* Define to 1 if you have the <sys/time.h> header file. */
+#undef HAVE_SYS_TIME_H
+
+/* Define to 1 if you have the <sys/types.h> header file. */
+#undef HAVE_SYS_TYPES_H
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#undef HAVE_UNISTD_H
+
+/* Define to 1 if you have the <utime.h> header file. */
+#undef HAVE_UTIME_H
+
+/* Define to 1 if `utime(file, NULL)' sets file's timestamp to the present. */
+#undef HAVE_UTIME_NULL
+
+/* Define to 1 if you have the `vprintf' function. */
+#undef HAVE_VPRINTF
+
+/* "xdrproc_t" */
+#undef HAVE_XDRPROC_T
+
+/* "xdr_free in header?" */
+#undef HAVE_XDR_FREE_DECL
+
+/* Define to 1 if `major', `minor', and `makedev' are declared in <mkdev.h>.
+   */
+#undef MAJOR_IN_MKDEV
+
+/* Define to 1 if `major', `minor', and `makedev' are declared in
+   <sysmacros.h>. */
+#undef MAJOR_IN_SYSMACROS
+
+/* "Mountlist: MOUNTED_FREAD_FSTYP" */
+#undef MOUNTED_FREAD_FSTYP
+
+/* "Mountlist: MOUNTED_GETFSSTAT" */
+#undef MOUNTED_GETFSSTAT
+
+/* "Mountlist: MOUNTED_GETMNT" */
+#undef MOUNTED_GETMNT
+
+/* "Mountlist: MOUNTED_GETMNTENT1" */
+#undef MOUNTED_GETMNTENT1
+
+/* "Mountlist: MOUNTED_GETMNTENT2" */
+#undef MOUNTED_GETMNTENT2
+
+/* "Mountlist: MOUNTED_GETMNTINFO" */
+#undef MOUNTED_GETMNTINFO
+
+/* "Mountlist: MOUNTED_VMOUNT" */
+#undef MOUNTED_VMOUNT
+
+/* Name of package */
+#undef PACKAGE
+
+/* Define to the address where bug reports for this package should be sent. */
+#undef PACKAGE_BUGREPORT
+
+/* Define to the full name of this package. */
+#undef PACKAGE_NAME
+
+/* Define to the full name and version of this package. */
+#undef PACKAGE_STRING
+
+/* Define to the one symbol short name of this package. */
+#undef PACKAGE_TARNAME
+
+/* Define to the version of this package. */
+#undef PACKAGE_VERSION
+
+/* Define as the return type of signal handlers (`int' or `void'). */
+#undef RETSIGTYPE
+
+/* "sizeof" */
+#undef SIZEOF_DEV_T
+
+/* "sizeof" */
+#undef SIZEOF_GID_T
+
+/* "sizeof" */
+#undef SIZEOF_INO_T
+
+/* "sizeof" */
+#undef SIZEOF_UID_T
+
+/* "sizeof" */
+#undef SIZEOF_UNSIGNED_INT
+
+/* "sizeof" */
+#undef SIZEOF_UNSIGNED_LONG
+
+/* "sizeof" */
+#undef SIZEOF_UNSIGNED_SHORT
+
+/* "FS usage: STATFS_OSF1" */
+#undef STATFS_OSF1
+
+/* Define to 1 if the `S_IS*' macros in <sys/stat.h> do not work properly. */
+#undef STAT_MACROS_BROKEN
+
+/* "FS usage: STAT_READ" */
+#undef STAT_READ
+
+/* "FS usage: STAT_STATFS2_BSIZE" */
+#undef STAT_STATFS2_BSIZE
+
+/* "FS usage: STAT_STATFS2_FSIZE" */
+#undef STAT_STATFS2_FSIZE
+
+/* "FS usage: STAT_STATFS2_FS_DATA" */
+#undef STAT_STATFS2_FS_DATA
+
+/* "FS usage: STAT_STATFS4" */
+#undef STAT_STATFS4
+
+/* "FS usage: STAT_STATVFS" */
+#undef STAT_STATVFS
+
+/* Define to 1 if you have the ANSI C header files. */
+#undef STDC_HEADERS
+
+/* Version number of package */
+#undef VERSION
+
+/* Define to 1 if on AIX 3.
+   System headers sometimes define this.
+   We just want to avoid a redefinition error message.  */
+#ifndef _ALL_SOURCE
+# undef _ALL_SOURCE
+#endif
+
+/* Define to 1 if on MINIX. */
+#undef _MINIX
+
+/* Define to 2 if the system does not provide POSIX.1 features except with
+   this defined. */
+#undef _POSIX_1_SOURCE
+
+/* Define to 1 if you need to in order for `stat' and other things to work. */
+#undef _POSIX_SOURCE
+
+/* Define to empty if `const' does not conform to ANSI C. */
+#undef const
+
+/* Define to `unsigned int' if <sys/types.h> does not define. */
+#undef dev_t
+
+/* Define to `int' if <sys/types.h> doesn't define. */
+#undef gid_t
+
+/* Define to `unsigned long' if <sys/types.h> does not define. */
+#undef ino_t
+
+/* Define to `int' if <sys/types.h> does not define. */
+#undef mode_t
+
+/* Define to `int' if <sys/types.h> doesn't define. */
+#undef uid_t

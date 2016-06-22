@@ -1,0 +1,83 @@
+#### Start of system configuration section. ####
+
+SRCDIR = @srcdir@
+VPATH = @srcdir@
+CC = @CC@
+AR = ar
+RANLIB = @RANLIB@
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ -s -m 755
+INSTALL_DATA = @INSTALL_DATA@
+RPCGEN = @RPCGEN@ @RPCGEN_C@
+DEFS = @DEFS@
+LIBS = ../libnfs.a @LIBS@
+CFLAGS = @CFLAGS@
+LDFLAGS = @LDFLAGS@
+WARNFLAGS = @WARNFLAGS@
+RPC_WARNFLAGS = @RPC_WARNFLAGS@
+TRANSPORTFLAGS = @RPCGEN_I@ -s udp -s tcp
+EXEEXT = @EXEEXT@
+SHELL = /bin/bash
+INCLUDE = -I../include -I../xdr
+COMPILE = $(CC) -c $(CPPFLAGS) $(DEFS) $(INCLUDE) $(CFLAGS) $(WARNFLAGS)
+
+PAREN := '('
+SPLINT ?= splint
+SPLINT_ARGS := $(INCLUDE) $(DEFS) -D__STDC__=1 -DIPPORT_RESERVED=1024 +unixlib +quiet +weak
+SPLINT_SYSDEFS := $(shell cat /dev/null | cpp -dMi | grep -v $(PAREN) | sed -e 's,\#define \([^ ]*\) \(.*\),-D\1="\2",')
+
+prefix	= $(install_prefix)/usr
+exec_prefix = $(prefix)
+bindir	= $(exec_prefix)/sbin
+rpcprefix = rpc.
+binprefix = 
+
+#### End of system configuration section. ####
+
+SHOWMT_SRC	= $(wildcard *.c)
+SHOWMT_OBJS	= $(patsubst %.c,%.o,$(wildcard *.c))
+SHOWMT		= showmount$(EXEEXT)
+PROGRAMS	= $(SHOWMT)
+
+.PHONY: all install installdirs splint
+
+all: $(PROGRAMS)
+
+install: $(PROGRAMS) installdirs
+	@for prog in $(PROGRAMS); do \
+	    echo "installing $$prog in $(bindir)";	\
+	    $(INSTALL_PROGRAM) $$prog $(bindir)/$$prog;	\
+	done
+
+installdirs:
+	../mkinstalldirs $(bindir)
+
+splint:
+	@for f in $(SHOWMT_SRC); do \
+		echo $(SPLINT) $(SPLINT_ARGS) $$f ; \
+		$(SPLINT) $(SPLINT_SYSDEFS) $(SPLINT_ARGS) $$f 2>&1 | sed -e 's,^\(.*\)$$,SPLINT: \1,' ; \
+	done
+
+
+.c.o:
+	$(COMPILE) $<
+
+$(SHOWMT): $(SHOWMT_OBJS) $(LIBS)
+	$(CC) $(LDFLAGS) -o $@ $(SHOWMT_OBJS) $(LIBS)
+
+.PHONY: clean mostlyclean distclean
+
+clean mostlyclean distclean::
+	@rm -vf $(PROGRAMS)
+	@rm -vf *.o
+	@rm -vf *.stackdump
+	@rm -vf core
+
+mostlyclean distclean::
+	@rm -vf Makefile
+
+distclean::
+	@rm -vf *~
+
+# Prevent GNU make v3 from overflowing arg limit on SysV.
+.NOEXPORT:

@@ -1,0 +1,82 @@
+#### Start of system configuration section. ####
+
+SRCDIR = @srcdir@
+VPATH = @srcdir@
+CC = @CC@
+AR = ar
+RANLIB = @RANLIB@
+SHELL = /bin/bash
+DEFS = @DEFS@
+LIBS = @LIBS@
+CFLAGS = @CFLAGS@
+LDFLAGS = @LDFLAGS@
+WARNFLAGS = @WARNFLAGS@
+INCLUDE = -I../include -I../xdr
+COMPILE = $(CC) -c $(CPPFLAGS) $(DEFS) $(INCLUDE) $(CFLAGS) $(WARNFLAGS)
+
+PAREN := '('
+SPLINT ?= splint
+SPLINT_ARGS := $(INCLUDE) $(DEFS) -D__STDC__=1 -DIPPORT_RESERVED=1024 +unixlib +quiet +weak
+SPLINT_SYSDEFS := $(shell cat /dev/null | cpp -dMi | grep -v $(PAREN) | sed -e 's,\#define \([^ ]*\) \(.*\),-D\1="\2",')
+
+#### End of system configuration section. ####
+
+LIBNFS_OBJS	= auth.o \
+		  auth_clnt.o \
+		  auth_init.o \
+		  devtab.o \
+		  faccess.o \
+		  failsafe.o \
+		  fhandle.o \
+		  fsxid.o \
+		  haccess.o \
+		  logging.o \
+		  nfsmounted.o \
+		  rpcmisc.o \
+		  signals.o \
+		  xmalloc.o \
+		  xmalloc_failed.o \
+		  xrealloc.o \
+		  xstrdup.o \
+		  xrealpath.o \
+		  @LIBOBJS@
+LIBNFS_SRC	= $(patsubst %.o,%.c,$(LIBNFS_OBJS))
+LIBNFS 		= ../libnfs.a
+LIBRARIES 	= $(LIBNFS)
+
+.PHONY: all install splint
+
+all: $(LIBRARIES)
+
+.c.o:
+	$(COMPILE) $<
+
+install: 
+
+splint:
+	@for f in $(LIBNFS_SRC); do \
+		echo $(SPLINT) $(SPLINT_ARGS) $$f ; \
+		$(SPLINT) $(SPLINT_SYSDEFS) $(SPLINT_ARGS) $$f 2>&1 | sed -e 's,^\(.*\)$$,SPLINT: \1,' ; \
+	done
+
+$(LIBNFS): $(LIBNFS_OBJS)
+	@rm -f $@
+	$(AR) cr $@ $(LIBNFS_OBJS)
+	-$(RANLIB) $@
+
+.PHONY: clean mostlyclean distclean 
+
+clean mostlyclean distclean::
+	@rm -vf ../libnfs.a
+	@rm -vf *.o
+	@rm -vf *.stackdump
+	@rm -vf core
+
+mostlyclean distclean::
+	@rm -vf Makefile
+
+distclean::
+	@rm -vf *~
+
+# Prevent GNU make v3 from overflowing arg limit on SysV.
+.NOEXPORT:

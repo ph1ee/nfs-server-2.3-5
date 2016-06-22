@@ -1,0 +1,129 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT([unfsd],[2.3],[samuel.robb@netapp.com])
+AM_INIT_AUTOMAKE
+AC_PREREQ(2.57)
+AC_CONFIG_SRCDIR([README])
+AC_CONFIG_HEADERS([include/config.h])
+AC_PROG_CC
+# If we're using gcc, we want warning flags
+test -n "$GCC" && WARNFLAGS=-Wall
+test -n "$GCC" && RPC_WARNFLAGS="-Wno-unused -Wno-switch -Wno-uninitialized"
+AC_SUBST(WARNFLAGS)
+AC_SUBST(RPC_WARNFLAGS)
+AC_PROG_MAKE_SET
+AC_PROG_CPP
+AC_PROG_RANLIB
+AC_PROG_RPCGEN
+AC_RPCGEN_C
+AC_RPCGEN_I
+AC_PROG_GCC_TRADITIONAL([])
+AC_AIX
+AC_MINIX
+AC_ISC_POSIX
+AC_PROG_INSTALL
+AC_HEADER_STDC([])
+AC_GNULIBC
+AC_C_CONST([])
+AC_FUNC_VPRINTF([])
+AC_HEADER_DIRENT
+AC_HEADER_STAT([])
+AC_STRUCT_ST_BLOCKS
+AC_CHECK_MEMBERS([struct stat.st_rdev]) 
+AC_TYPE_SIGNAL
+AC_TYPE_UID_T dnl this checks both uid_t and gid_t
+AC_TYPE_MODE_T
+AC_TYPE_GETGROUPS
+AC_XDRPROC_T
+AC_XDR_FREE_DECL
+AC_FUNC_UTIME_NULL([])
+AC_HEADER_MAJOR([])
+AC_CHECK_SIZEOF([unsigned long])
+AC_CHECK_SIZEOF([unsigned short])
+AC_CHECK_SIZEOF([unsigned int])
+AC_CHECK_TYPE([dev_t], [unsigned int])
+AC_CHECK_TYPE([ino_t], [unsigned long])
+AC_CHECK_SIZEOF([uid_t])
+AC_CHECK_SIZEOF([gid_t])
+AC_CHECK_SIZEOF([ino_t])
+AC_CHECK_SIZEOF([dev_t])
+AC_CHECK_HEADERS([stdarg.h unistd.h string.h memory.h fcntl.h syslog.h sys/file.h sys/time.h utime.h sys/fsuid.h])
+AC_CHECK_LIB([nsl], [main])
+AC_CHECK_LIB([socket], [main])
+AC_CHECK_LIB([rpc], [main])
+AC_CHECK_LIB([nys], [main])
+AC_CHECK_FUNCS([getcwd seteuid setreuid getdtablesize setgroups lchown setsid setfsuid setfsgid innetgr quotactl authdes_getucred])
+AC_CHECK_FUNCS([getopt getopt_long])
+AC_AUTHDES_GETUCRED
+AC_BROKEN_SETFSUID
+AC_MOUNTLIST
+AC_FSUSAGE
+AC_BSD_SIGNALS
+AC_SUBST(LDFLAGS)
+AC_SUBST(CFLAGS)
+AC_ARG_ENABLE([multiple-servers],
+  [AC_HELP_STRING([--enable-multiple-servers],
+  [Enable support for multiple server processes])],
+  [AC_DEFINE([ENABLE_MULTIPLE_SERVERS], 1,
+  [If defined, you will be able to run several nfsd process
+   in parallel servicing all NFS requests.])])
+AC_ARG_ENABLE(devtab,
+  [AC_HELP_STRING([--enable-devtab],
+  [Enable support for new devtab inode numbers for big disks])],
+  [AC_DEFINE([ENABLE_DEVTAB], 1,
+  [If defined, nfsd will use the new inode number generation scheme
+   for avoiding inode number clashes on big hard disks.])])
+AC_ARG_ENABLE(call-profiling,
+  [AC_HELP_STRING([--enable-call-profiling],
+  [Enable NFS server call profiling])],
+  [AC_DEFINE([ENABLE_CALL_PROFILING], 1,
+  [If defined, the nfs server will collect call profiling statistics.])])
+AC_ARG_ENABLE(ugidd,
+  [AC_HELP_STRING([--enable-ugidd],
+  [Enable support for ugidd uid mapping])],
+  [AC_DEFINE([ENABLE_UGID_DAEMON], 1,
+  [If defined, nfsd will support ugidd queries.])])
+AC_ARG_ENABLE(nis,
+  [AC_HELP_STRING([--enable-nis],
+  [Enable support for NIS-based uid mapping])],
+  [AC_DEFINE([ENABLE_UGID_NIS], 1,
+  [If defined, nfsd will support user mapping via the client's
+   NIS server.])])
+AC_ARG_ENABLE(hosts-access,
+  [AC_HELP_STRING([--enable-hosts-access],
+  [Enable support for hosts.allow/hosts.deny checks])],
+  [AC_DEFINE([ENABLE_HOSTS_ACCESS], 1,
+  [If defined, ugidd will use host access control provided by
+   libwrap.a from tcp_wrappers.])]
+  [AC_CHECK_LIB([wrap], [hosts_ctl])]
+  [AC_LIBWRAP_BUG])
+AC_ARG_ENABLE(log-mounts,
+  [AC_HELP_STRING([--enable-log-mounts],
+  [Enable support for logging all mount requests])],
+  [AC_DEFINE([ENABLE_LOG_MOUNTS], 1,
+  [If defined, every mount request will be logged to syslogd with
+   the name of the requesting site and the path that was requested.])])
+AC_ARG_ENABLE(exports-owner-check,
+  [AC_HELP_STRING([--enable-exports-owner-check],
+  [Enable check of /etc/exports owner at server startup])],
+  [AC_DEFINE([ENABLE_EXPORTS_OWNER_CHECK], 1,
+  [If defined, use EXPORTS_OWNER_UID and EXPORTS_OWNER_GID to
+   check of /etc/exports owner at server startup])])
+AC_ARG_ENABLE(exports-uid,
+  [AC_HELP_STRING([--enable-exports-uid],
+  [Specify uid of /etc/exports owner if ENABLE_EXPORTS_OWNER_CHECK defined])],
+  ac_cv_exports_uid=$enable_exports_uid,
+  ac_cv_exports_uid=500)
+AC_ARG_ENABLE(exports-gid,
+  [AC_HELP_STRING([--enable-exports-gid],
+  [Specify gid of /etc/exports owner if ENABLE_EXPORTS_OWNER_CHECK defined])],
+  ac_cv_exports_gid=$enable_exports_gid,
+  ac_cv_exports_gid=513)
+AC_DEFINE_UNQUOTED([EXPORTS_OWNER_UID],
+  $ac_cv_exports_uid,
+  [User id of /etc/exports owner])
+AC_DEFINE_UNQUOTED([EXPORTS_OWNER_GID],
+  $ac_cv_exports_gid,
+  [Group id of /etc/exports owner])
+AC_CONFIG_FILES([libnfs/Makefile mountd/Makefile nfsd/Makefile ugidd/Makefile util/Makefile xdr/Makefile doc/Makefile])
+AC_CONFIG_FILES([Makefile])
+AC_OUTPUT

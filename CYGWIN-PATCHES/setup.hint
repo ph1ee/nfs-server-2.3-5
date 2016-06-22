@@ -1,0 +1,8 @@
+category: Net
+requires: cygwin sunrpc
+sdesc: "Universal NFS server."
+ldesc: "This package contains an NFS daemon (rpc.nfsd) and a mount daemon (rpc.mountd).
+Unlike other NFS daemons, this NFS server runs entirely in user space. This makes
+it a tad slower than other NFS implementations, and also introduces some
+awkwardnesses in the semantics (for instance, moving a file to a different
+directory will render its file handle invalid)."
