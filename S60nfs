@@ -3,15 +3,15 @@
 # nfs           This shell script takes care of starting and stopping
 #               the NFS services. Stolen from RedHat FC5.
 
-[ -x /usr/sbin/rpc.statd ] || exit 0
+[ -x /usr/sbin/rpc.ugidd ] || exit 0
 [ -x /usr/sbin/rpc.nfsd ] || exit 0
 [ -x /usr/sbin/rpc.mountd ] || exit 0
-[ -x /usr/sbin/exportfs ] || exit 0
+[ -x /usr/sbin/showmount ] || exit 0
 
 mkdir -p /var/lock/subsys
 mkdir -p /run/nfs/sm
 mkdir -p /run/nfs/sm.bak
-touch /run/nfs/rmtab
+touch /etc/rmtab
 
 CFG_FILE=/etc/default/nfsd
 
@@ -23,13 +23,9 @@ fi
 
 start() {
 	# Start daemons.
-	printf "Starting NFS statd: "
-	rpc.statd
+	printf "Starting NFS ugidd: "
+	rpc.ugidd
 	touch /var/lock/subsys/nfslock
-	echo "done"
-
-	printf "Starting NFS services: "
-	/usr/sbin/exportfs -r
 	echo "done"
 
 	printf "Starting NFS daemon: "
@@ -39,7 +35,6 @@ start() {
 	printf "Starting NFS mountd: "
 	rpc.mountd
 	echo "done"
-	touch /var/lock/subsys/nfs
 }
 
 stop() {
@@ -49,17 +44,11 @@ stop() {
 	echo "done"
 
 	printf "Shutting down NFS daemon: "
-	kill -9 `pidof nfsd` 2>/dev/null
+	kill -9 `pidof rpc.nfsd` 2>/dev/null
 	echo "done"
 
-	printf "Shutting down NFS services: "
-	/usr/sbin/exportfs -au
-	rm -f /var/lock/subsys/nfs
-	killall -q rpc.statd
-	echo "done"
-
-	printf "Stopping NFS statd: "
-	killall -q rpc.statd
+	printf "Stopping NFS ugidd: "
+	killall -q rpc.ugidd
 	echo "done"
 	rm -f /var/lock/subsys/nfslock
 }
@@ -77,8 +66,6 @@ case "$1" in
 	start
 	;;
   reload)
-	/usr/sbin/exportfs -r
-	touch /var/lock/subsys/nfs
 	;;
   *)
 	echo "Usage: nfs {start|stop|reload}"
