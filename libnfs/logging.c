@@ -21,6 +21,7 @@
 #else
 #define LOG_FILE "/var/tmp/%s.log"
 #endif
+#include <time.h>
 
 static int logging = 0;			       /* enable/disable DEBUG logs    */
 static int dbg_mask = D_GENERAL;	       /* What will be logged          */

@@ -11,9 +11,9 @@ SHELL = /bin/bash
 
 prefix	= $(install_prefix)/usr
 infodir = $(install_prefix)/info
-man5dir = $(install_prefix)/@mandir@/man5
+man5dir = @mandir@/man5
 man5ext = .5
-man8dir = $(install_prefix)/@mandir@/man8
+man8dir = @mandir@/man8
 man8ext = .8
 rpcprefix = rpc.
 binprefix = 

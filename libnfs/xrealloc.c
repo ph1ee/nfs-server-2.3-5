@@ -28,7 +28,7 @@
  * If N is 0, run free and return NULL.
  */
 void *
-xrealloc(void *p, unsigned int n)
+xrealloc(void *p, size_t n)
 {
 	if (p == 0) {
 		return xmalloc(n);

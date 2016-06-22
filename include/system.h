@@ -55,7 +55,7 @@ typedef bool_t(*xdrproc_t) ();
 #include <arpa/inet.h>	/* for inet_ntoa(3) */
 
 #ifndef __CYGWIN__
-#include <arpa/nameserv.h>	/* needed for <resolv.h> */
+//#include <arpa/nameserv.h>	/* needed for <resolv.h> */
 #include <resolv.h>	/* needed for h_errno */
 #endif
 
